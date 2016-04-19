@@ -29,5 +29,21 @@ glimpse(bikeshare) #Sanity check
 
 
 ggplot(bikeshare, aes(x=factor(season), y=cnt)) + ggtitle("Capital User Count by Season in 2011 and 2012") + geom_boxplot() + stat_summary(fun.y = "mean",  geom = "point", shape=22, size=3, fill="dodgerblue") + facet_wrap(~ yr) + theme(strip.text = element_text(face = "bold", size = rel(1.25), color = "white"), strip.background= element_rect(fill = "tomato", color = "red", size = 1))
+hist(sqrt(bikeshare$cnt)) # Chosen as transformation for linear regression modeling
+bikeshare$cnt.trans<- sqrt(bikeshare$cnt)
+library (leaps)
+preds<- with(bikeshare, cbind(season, yr, mnth, hr, holiday, weekday, workingday, weathersit, temp, atemp, hum, windspeed, casual, registered))
+x1<- regsubsets(preds, y=bikeshare$cnt.trans)
+rs<- summary(x1)
+rs$which[which.max(rs$adjr2),]
+rs$which[which.min(rs$cp),]
+plot(rs$adjr2 ~ I(1:8), ylab = "Adjusted R Squared", xlab = "# of Predictors, not incl intercept")
+lines(spline(rs$adjr2 ~ I(1:8)))
+plot(rs$cp ~ I(1:8), ylab = "Mallow's Cp Stat", xlab = "# of fitted coefficients", main="Best subsets Comparison of Mallow's Cp")
+lines(spline(rs$cp ~ I(1:8)))
+library(car)
+subsets(x1, statistic=c("adjr2"), legend="topright", cex = 0.5) # Sanity check
+subsets(x1, statistic=c("cp"), legend="topright", cex = 0.55)
 
+M1.lm<- lm(cnt.trans ~ season + hr + weekday + workingday + atemp + hum + casual + registered, data = bikeshare)
 anova(M1.lm)
