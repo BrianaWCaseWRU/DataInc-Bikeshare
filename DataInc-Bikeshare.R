@@ -45,4 +45,5 @@ library(car)
 subsets(x1, statistic=c("adjr2"), legend="topright", cex = 0.5) # Sanity check
 subsets(x1, statistic=c("cp"), legend="topright", cex = 0.55)
 
+M1.lm<- lm(cnt.trans ~ season + hr + weekday + workingday + atemp + hum + casual + registered, data = bikeshare)
 anova(M1.lm)
