@@ -29,5 +29,7 @@ glimpse(bikeshare) #Sanity check
 
 
 ggplot(bikeshare, aes(x=factor(season), y=cnt)) + ggtitle("Capital User Count by Season in 2011 and 2012") + geom_boxplot() + stat_summary(fun.y = "mean",  geom = "point", shape=22, size=3, fill="dodgerblue") + facet_wrap(~ yr) + theme(strip.text = element_text(face = "bold", size = rel(1.25), color = "white"), strip.background= element_rect(fill = "tomato", color = "red", size = 1))
+hist(sqrt(bikeshare$cnt)) # Chosen as transformation for linear regression modeling
+bikeshare$cnt.trans<- sqrt(bikeshare$cnt)
 
 anova(M1.lm)
