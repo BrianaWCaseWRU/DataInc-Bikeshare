@@ -37,5 +37,12 @@ x1<- regsubsets(preds, y=bikeshare$cnt.trans)
 rs<- summary(x1)
 rs$which[which.max(rs$adjr2),]
 rs$which[which.min(rs$cp),]
+plot(rs$adjr2 ~ I(1:8), ylab = "Adjusted R Squared", xlab = "# of Predictors, not incl intercept")
+lines(spline(rs$adjr2 ~ I(1:8)))
+plot(rs$cp ~ I(1:8), ylab = "Mallow's Cp Stat", xlab = "# of fitted coefficients", main="Best subsets Comparison of Mallow's Cp")
+lines(spline(rs$cp ~ I(1:8)))
+library(car)
+subsets(x1, statistic=c("adjr2"), legend="topright", cex = 0.5) # Sanity check
+subsets(x1, statistic=c("cp"), legend="topright", cex = 0.55)
 
 anova(M1.lm)
